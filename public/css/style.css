@@ -33,7 +33,7 @@ h3 {
 }
 
 .navbar-style {
-  background-color: #f8f9fa;
+  background-color: #23282d;
   box-shadow: 2px 4px 13px 1px rgba(8, 8, 8, 0.04);
 }
 
@@ -59,8 +59,65 @@ h3 {
 .navbar-light .navbar-nav .nav-link:hover {
   color: #fd5c63;
 }
+.navbar-light .navbar-nav .nav-link{
+  color: #ffffff;
+}
+.navbar-custom {
+  background-color: lightgreen;
+}
+.nav-item {
+  float: left;
+  overflow: hidden;
+}
+
+/* .nav-item .dropbtn {
+  font-size: 16px;  
+  border: none;
+  outline: none;
+  color: white;
+  padding: 14px 16px;
+  background-color: inherit;
+  font-family: inherit;
+  margin: 0;
+} */
+
+.navbar a:hover, .nav-item:hover .dropbtn {
+  color: #ec615b !important;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #f9f9f9;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+}
+
+.dropdown-content a {
+  float: none;
+  color: black;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+  text-align: left;
+}
+
+.dropdown-content a:hover {
+  background-color: #ddd;
+}
+
+.nav-item:hover .dropdown-content {
+  display: block;
+}
+/* end of navebar styles */
 
 /* our hero sections  */
+
+.hero-background{
+  background-image: linear-gradient(to right, rgba(255,0,0,0), rgba(255,0,0,1));
+  position: absolute;
+}
 
 .hero-text h1 {
   font-size: 5.5rem;
@@ -107,6 +164,10 @@ label {
   -o-transition: 0.5s all;
   -ms-transition: 0.5s all;
   transition: 0.5s all;
+}
+
+.coin-img {
+  width: 100%;
 }
 
 /* about us style starts  */
@@ -272,7 +333,36 @@ footer p {
 /* .add{background: #333; padding: 10%; height: 300px;} */
 /* Blog page css end */
 
+.heading_size{
+  font-size: 3rem !important;
+}
+.instrunction {
+  border: 1px solid #f7f5f59e;
+  border-radius: 6px;
+}
+.hint{
+  background: #f3717f9e;
+  color: white;
+}
 
+.error-box{
+  background: #daf1da;
+  color: #ff0707;
+}
+
+/* start profile css */
+.profile_label_m-t{
+  margin-top: 0rem;
+}
+
+.profile_label_m-b{
+  margin-bottom: 1rem;
+}
+.profile_font_label{
+  font-size: medium;
+}
+
+/* end profile css */
 
 /* media queries part starts here  */
 

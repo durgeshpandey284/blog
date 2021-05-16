@@ -5,20 +5,22 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node app.js",
+    "start": "src/app.js",
     "dev": "nodemon src/app.js -e js,hbs"
-  },
-  "engines": {
-    "node": "14.x"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "bcryptjs": "^2.4.3",
     "bootstrap": "^4.6.0",
+    "cookie-parser": "^1.4.5",
+    "dotenv": "^9.0.2",
     "express": "^4.17.1",
+    "express-session": "^1.17.1",
     "hbs": "^4.1.2",
     "jquery": "^3.6.0",
+    "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.12.6",
     "validator": "^13.6.0"
   }

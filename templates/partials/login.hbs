@@ -1,0 +1,31 @@
+<div class="container-fluid hero-background" id="loginid" style="position: fixed;height: 100%;">
+  <div class="row mt-5">
+    <div class="col-md-10 col-12 mx-auto">
+      <h1 class="text-center main-heading">Sign In</h1>
+      <p class="text-center sub-heading">Use your credentials</p>
+
+      <div class="row">
+        <div class="col-md-6 col-12 mx-auto">
+          {{#if invalidCred}}
+          <div class="col-md-12 col-12 mx-auto hint error-box instrunction">
+            <p>{{invalidCred}}</p>
+          </div>
+          {{/if}}
+          <form action="/login" method="POST">
+            <div class="form-group">
+              <label for="uname">Email</label>
+              <input type="email" class="form-control" id="email" name="email">
+            </div>
+            <div class="form-group">
+              <label for="psw">password</label>
+              <input type="password" class="form-control" id="psw" name="psw">
+            </div>
+
+            <button type="submit" class="btn-style btn-primary">Sign in</button>
+            <a href="/register">Register here</a>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

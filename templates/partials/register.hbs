@@ -1,0 +1,68 @@
+<div class="container-fluid  hero-background" id="regesterid">
+  <div class="row mt-5">
+    <div class="col-md-10 col-12 mx-auto">
+
+
+      <div class="row">
+
+        <div class="col-md-6 col-12 mx-auto">
+          <h5 class="text-center main-heading heading_size">Register here</h5>
+           {{#if invalidCred}}
+          <div class="col-md-12 col-12 mx-auto hint error-box instrunction">
+            <p>{{invalidCred}}</p>
+          </div>
+          {{/if}}
+          <form action="/register" method="POST">
+            <div class="form-group">
+              <label for="name">Name</label>
+              <input type="text" class="form-control" id="name" name="name">
+            </div>
+            <div class="form-group">
+              <label for="email">Email address</label>
+              <input type="email" class="form-control" id="email" aria-describedby="emailHelp" name="email">
+            </div>
+            <div class="form-group">
+              <label for="phone">Phone</label>
+              <input type="text" class="form-control" id="phone" name="phone">
+            </div>
+            <div class="form-group">
+              <label for="psw">Password</label>
+              <input type="password" class="form-control" id="psw" name="psw">
+            </div>
+            <div class="form-group">
+              <label for="confirmpassword">Confirm Password</label>
+              <input type="password" class="form-control" id="confirmpassword" name="confirmpassword">
+            </div>
+            <button type="submit" class="btn-style btn-primary">Submit</button>
+            <a href="/login">Sign in</a>
+          </form>
+        </div>
+        <div class="col-md-4 col-12 mx-auto">
+          <h5 class="text-center main-heading heading_size">Follow instructions</h5>
+          <div class="col-md-12 col-12 mx-auto instrunction hint">
+            <p>password must be 8 character long</p>
+            <p>password must be 8 character long</p>
+            <p>password must be 8 character long</p>
+          </div>
+          <hr>
+          {{!--Start, In case validation fail--}}
+          {{#if invalidPassword}}
+          <div class="col-md-12 col-12 mx-auto hint error-box instrunction" >
+            <p>{{invalidPassword.username}}</p>
+            <p>{{invalidPassword.email}}</p>
+            <p>{{invalidPassword.phone}}</p>
+            <p>{{invalidPassword.psw}}</p>
+            <p>{{invalidPassword.confirmpassword}}</p>
+            <p>{{invalidPassword.passwordmissmatch}}</p>
+            {{/if}}
+            {{#if registerSuccess}}
+            <p>{{registerSuccess}}</p>
+          </div>
+          {{/if}}
+          {{!--End, In case validation fails--}}
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
