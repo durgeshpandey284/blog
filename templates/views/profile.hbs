@@ -25,135 +25,117 @@
                             <h2 class="text-center font-weight-light">User Profile</h2>
                         </div>
                         <div class="col-lg-8">
-                            <div class="alert alert-info alert-dismissable"> <a class="panel-close close"
-                                    data-dismiss="alert">×</a> This is an <strong>.alert</strong>. Use this to show
-                                important messages to the user. </div>
+                            <p>
+                                <a href="/editprofile/{{userData._id}}" class="a-text-color"><i
+                                        class="fa fa-edit float-right">Edit/Update profile
+                                    </i></a>
+                            </p>
                         </div>
+                        {{#if userData}}
                         <div class="col-lg-8 order-lg-1 personal-info">
-                            <form role="form">
+
+                            <form role="form" action="/updateprofile/{{userData._id}}" method="POST">
                                 <div class="form-group row">
                                     <label
-                                        class="col-lg-3 col-form-label form-control-label profile_label_m-t profile_font_label">First
-                                        name</label>
+                                        class="col-lg-3 col-form-label form-control-label profile_label_m-t profile_font_label">
+                                        Name</label>
                                     <div class="col-lg-9 profile_label_m-b profile_label_m-b">
-                                        <input class="form-control" type="text" value="Jane" />
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label
-                                        class="col-lg-3 col-form-label form-control-label profile_label_m-t profile_font_label">Last
-                                        name</label>
-                                    <div class="col-lg-9 profile_label_m-b">
-                                        <input class="form-control" type="text" value="Bishop" />
+                                        <input class="form-control" type="text" value="{{userData.name}}" name="name"
+                                            {{#if viewOnly}}disabled{{/if}} />
                                     </div>
                                 </div>
                                 <div class="form-group row">
                                     <label
                                         class="col-lg-3 col-form-label form-control-label profile_label_m-t profile_font_label">Email</label>
                                     <div class="col-lg-9 profile_label_m-b">
-                                        <input class="form-control" type="email" value="email@gmail.com" />
+                                        <input class="form-control" type="email" value="{{userData.email}}" name="email"
+                                            {{#if viewOnly}}disabled{{/if}} />
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label
+                                        class="col-lg-3 col-form-label form-control-label profile_label_m-t profile_font_label">Phone</label>
+                                    <div class="col-lg-9 profile_label_m-b">
+                                        <input class="form-control" type="text" value="{{userData.phone}}" name="phone"
+                                            {{#if viewOnly}}disabled{{/if}} />
                                     </div>
                                 </div>
                                 <div class="form-group row">
                                     <label
                                         class="col-lg-3 col-form-label form-control-label profile_label_m-t profile_font_label">Company</label>
                                     <div class="col-lg-9 profile_label_m-b">
-                                        <input class="form-control" type="text" value="" />
+                                        <input class="form-control" type="text" value="{{userData.company}}"
+                                            name="company" {{#if viewOnly}}disabled{{/if}} />
                                     </div>
                                 </div>
                                 <div class="form-group row">
                                     <label
                                         class="col-lg-3 col-form-label form-control-label profile_label_m-t profile_font_label">Website</label>
                                     <div class="col-lg-9 profile_label_m-b">
-                                        <input class="form-control" type="url" value="" />
+                                        <input class="form-control" type="url" value="{{userData.website}}"
+                                            name="website" {{#if viewOnly}}disabled{{/if}} />
                                     </div>
                                 </div>
                                 <div class="form-group row">
                                     <label
                                         class="col-lg-3 col-form-label form-control-label profile_label_m-t profile_font_label">Address</label>
                                     <div class="col-lg-9 profile_label_m-b">
-                                        <input class="form-control" type="text" value="" placeholder="Street" />
+                                        <input class="form-control" type="text" value="{{userData.address.address}}"
+                                            placeholder="Street" name="address" {{#if viewOnly}}disabled{{/if}} />
                                     </div>
                                 </div>
                                 <div class="form-group row">
                                     <label
                                         class="col-lg-3 col-form-label form-control-label profile_label_m-t profile_font_label"></label>
-                                    <div class="col-lg-6">
-                                        <input class="form-control" type="text" value="" placeholder="City" />
+                                    <div class="col-lg-6 profile_label_m-b">
+                                        <input class="form-control" type="text" value="{{userData.address.city}}"
+                                            placeholder="City" name="city" {{#if viewOnly}}disabled{{/if}} />
                                     </div>
-                                    <div class="col-lg-3">
-                                        <input class="form-control" type="text" value="" placeholder="State" />
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label
-                                        class="col-lg-3 col-form-label form-control-label profile_label_m-t profile_font_label">Time
-                                        Zone</label>
-                                    <div class="col-lg-9 profile_label_m-b">
-                                        <select id="user_time_zone" class="form-control" size="0">
-                                            <option value="Hawaii">(GMT-10:00) Hawaii</option>
-                                            <option value="Alaska">(GMT-09:00) Alaska</option>
-                                            <option value="Pacific Time (US &amp; Canada)">(GMT-08:00) Pacific Time (US
-                                                &amp; Canada)</option>
-                                            <option value="Arizona">(GMT-07:00) Arizona</option>
-                                            <option value="Mountain Time (US &amp; Canada)">(GMT-07:00) Mountain Time
-                                                (US &amp; Canada)</option>
-                                            <option value="Central Time (US &amp; Canada)" selected="selected">
-                                                (GMT-06:00) Central Time (US &amp; Canada)</option>
-                                            <option value="Eastern Time (US &amp; Canada)">(GMT-05:00) Eastern Time (US
-                                                &amp; Canada)</option>
-                                            <option value="Indiana (East)">(GMT-05:00) Indiana (East)</option>
-                                        </select>
+                                    <div class="col-lg-3 profile_label_m-b">
+                                        <input class="form-control" type="text" value="{{userData.address.state}}"
+                                            placeholder="State" name="state" {{#if viewOnly}}disabled{{/if}} />
                                     </div>
                                 </div>
-                                <div class="form-group row">
-                                    <label
-                                        class="col-lg-3 col-form-label form-control-label profile_label_m-t profile_font_label">Username</label>
-                                    <div class="col-lg-9 profile_label_m-b">
-                                        <input class="form-control" type="text" value="janeuser" />
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label
-                                        class="col-lg-3 col-form-label form-control-label profile_label_m-t profile_font_label">Password</label>
-                                    <div class="col-lg-9 profile_label_m-b">
-                                        <input class="form-control" type="password" value="11111122333" />
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label
-                                        class="col-lg-3 col-form-label form-control-label profile_label_m-t profile_font_label">Confirm
-                                        password</label>
-                                    <div class="col-lg-9 profile_label_m-b">
-                                        <input class="form-control" type="password" value="11111122333" />
-                                    </div>
-                                </div>
+                                {{#unless viewOnly}}
                                 <div class="form-group row">
                                     <div class="col-lg-9 profile_label_m-b ml-auto text-right">
-                                        <input type="reset"
-                                            class="btn btn-outline-secondary profile_label_m-t profile_font_label"
-                                            value="Cancel" />
-                                        <input type="button" class="btn btn-primary" value="Save Changes" />
+                                        <a href="/profile/{{userData._id}}"
+                                            class="btn btn-outline-secondary profile_label_m-t profile_font_label">
+                                            Cancel</a>
+                                        {{!-- <input type="button" class="btn btn-primary" value="Save Changes" /> --}}
+                                        <button type="submit" class="btn-style btn-primary">Save Changes</button>
                                     </div>
                                 </div>
+                                {{/unless}}
                             </form>
                         </div>
+                        {{/if}}
+
                         <div class="col-lg-4 order-lg-0 text-center">
                             <img src="/img/user.png" class="mx-auto img-fluid rounded-circle" alt="user_icon"
                                 width="50%" />
                             <h6 class="my-4">Upload a new photo</h6>
-                            <div class="input-group px-xl-4">
-                                <div class="custom-file">
-                                    <input type="file" class="custom-file-input" id="inputGroupFile02">
-                                    <label class="custom-file-label" for="inputGroupFile02"
-                                        aria-describedby="inputGroupFileAddon02">Choose file</label>
+                            <form action="/uploadprofileimg/{{userData._id}}" method="POST" enctype="multipart/form-data">
+                                <div class="input-group px-xl-4">
+                                    <div class="custom-file">
+                                        {{!-- <input type="file" id="image" name="profileimg" value=""> --}}
+                                        <input type="file" id="image" class="custom-file-input" name="image" value=""
+                                            required>
+                                        <label class="custom-file-label" for="inputGroupFile02"
+                                            aria-describedby="inputGroupFileAddon02">Choose file</label>
+                                    </div>
+                                    <div class="input-group-append">
+                                        <button class="btn btn-secondary"><i class="fa fa-cloud-upload"
+                                                aria-hidden="true"></i></button>
+                                    </div>
+                                    <div>
+                                        <button type="submit">Submit</button>
+                                    </div>
                                 </div>
-                                <div class="input-group-append">
-                                    <button class="btn btn-secondary"><i class="fa fa-cloud-upload"
-                                            aria-hidden="true"></i></button>
-                                </div>
-                            </div>
+
+                            </form>
                         </div>
+
                     </div>
                 </div>
                 {{!--

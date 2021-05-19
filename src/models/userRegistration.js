@@ -25,7 +25,33 @@ const userSchema = new mongoose.Schema({
             type: String,
             required: true
         }
-    }]
+    }],
+    company: {
+        type: String
+    },
+    phone: {
+        type: String,
+        unique: true
+    },
+    website: {
+        type: String
+    },
+    address: {
+        address: {
+            type: String
+        },
+        city: {
+            type: String
+        },
+        state: {
+            type: String
+        }
+    },
+    img:
+    {
+        data: Buffer,
+        contentType: String
+    }
 })
 
 // create a middleware to generate token

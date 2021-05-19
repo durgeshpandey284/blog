@@ -1,11 +1,66 @@
 const express = require("express");
 const router = new express.Router();
 const bcrypt = require("bcryptjs");
+var multer = require('multer');
+var fs = require('fs');
+const path = require("path");
 
 const Blog = require("../models/addBlog");
 const User = require("../models/usermessage");
 const RegisterUser = require("../models/userRegistration");
+var imgModel = require('../models/userprofileimg');
 
+
+var storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, 'uploads')
+    },
+    filename: (req, file, cb) => {
+        cb(null, file.fieldname + '-' + Date.now())
+    }
+});
+var upload = multer({ storage: storage });
+
+
+//  Start of upload image 
+router.post('/uploadprofileimg/:id', upload.single('image'), (req, res, next) => {
+
+    const profileId = req.params.id;
+    console.log(__dirname + " : " + path.join(__dirname, "../../uploads"))
+    var obj = {
+        img: {
+            data: fs.readFileSync(path.join(__dirname, "../../uploads/" + req.file.filename)),
+            contentType: 'image/png'
+        },
+        profileid: profileId
+    }
+    console.log("_________________________uploadprofileimg_______________________")
+    // imgModel.findOneAndUpdate({_id:profileId}, obj)
+    imgModel.findOneAndUpdate({ _id: profileId }, obj, (err, item) => {
+        if (err) {
+            console.log(err);
+        }
+        else {
+            //item.save();
+            // res.redirect('/');
+            // If the document doesn't exist
+            if (!item) {
+                // Create it
+                item = new imgModel(obj);
+            }
+            // Save the document
+            item.save(function (error) {
+                if (!error) {
+                    // Do something with the document
+                } else {
+                    throw error;
+                }
+            });
+        }
+    });
+});
+
+//  END of upload image 
 
 // initial home page
 router.get("/", (req, res) => {
@@ -89,7 +144,8 @@ router.get("/postblog", (req, res) => {
     if (req.session.loggedin) {
         res.render("addBlog", {
             isloogedIn: req.session.loggedin,
-            userName: req.session.username
+            userName: req.session.username,
+            userData: req.session.userData
         });
     } else {
         res.render("addBlog");
@@ -100,6 +156,11 @@ router.get("/postblog", (req, res) => {
 // add blog 
 router.post("/postblog", async (req, res) => {
     try {
+        console.log(req.body);
+        req.body['author'] = req.session.userData.name;
+        req.body['email'] = req.session.userData.email;
+        req.body['phone'] = req.session.userData.phone;
+        console.log(req.body);
         const blogData = new Blog(req.body);
         const responsedata = await blogData.save();
         res.status(201).redirect("/blog");
@@ -213,11 +274,63 @@ router.post("/register", async (req, res) => {
 // get profile
 router.get("/profile/:id", async (req, res) => {
     const _id = req.params.id;
-    const profileData = await RegisterUser.findOne({_id: _id});// get that user
-    console.log("***********PROFILE*************");
-    console.log(profileData);
-    res.render("profile",{
-        profileData: profileData
+    const profileData = await RegisterUser.findOne({ _id: _id });// get that user
+    let profileImage;
+
+    // imgModel.find({profileid}) // get profile image
+    await imgModel.findOne({ profileid: _id }, {}, { sort: { 'created_at': -1 } }, function (err, post) {
+        console.log("****************")
+        console.log(post);
+        profileImage = post;
+        // coverting buffer to base64
+        // let base64data = post.img.data.buffer.toString('base64');
+        // console.log("****************")
+        // profileImage = base64data;
+        // console.log(JSON.stringify(base64data))
+    });
+
+    res.render("profile", {
+        profileData: profileData,
+        isloogedIn: req.session.loggedin,
+        userName: req.session.username,
+        userData: req.session.userData,
+        viewOnly: true,
+        profileImage: profileImage
+    });
+})
+// get profile
+router.get("/editprofile/:id", async (req, res) => {
+    const _id = req.params.id;
+    const profileData = await RegisterUser.findOne({ _id: _id });// get that user
+    res.render("profile", {
+        profileData: profileData,
+        isloogedIn: req.session.loggedin,
+        userName: req.session.username,
+        userData: req.session.userData,
+        viewOnly: false
+    });
+})
+
+// update profile
+router.post("/updateprofile/:id", async (req, res) => {
+    const _id = req.params.id;
+    const address = req.body.address;
+    const city = req.body.city;
+    const state = req.body.state;
+    delete req.body.address;
+    delete req.body.city;
+    delete req.body.state;
+    req.body['address'] = { address, city, state } // Object destructuring to insert object key
+    // get that user and update
+    const profileData = await RegisterUser.findByIdAndUpdate(_id, req.body, {
+        new: true
+    });
+    res.render("profile", {
+        profileData: profileData,
+        isloogedIn: req.session.loggedin,
+        userName: req.session.username,
+        userData: req.session.userData,
+        viewOnly: true
     });
 })
 
@@ -248,7 +361,7 @@ router.get("/logout", async (req, res) => {
 
 
 router.get("*", (req, res) => {
-    res.status(404).send("404", { title: "Page Not Found" })
+    res.status(404).render("404", { title: "Page Not Found" })
 })
 
 function validateUserRegistrationForm(request) {
