@@ -3,19 +3,20 @@
     <div class="col-md-10 col-12 mx-auto">
       <h1 class="text-center main-heading">Contact us</h1>
       <p class="text-center sub-heading">We will be happy to help you</p>
-
+      <p class="text-center sub-heading  error-box " style="color: #ff1a1a;">{{error}}</p>
       <div class="row">
         <div class="col-md-6 col-12 mx-auto">
+
           <form action="/contact" method="POST">
             <div class="form-group">
               <label for="exampleInputEmail1">Name</label>
               <input type="text" class="form-control" id="exampleInputEmail1" name="name">
-              
-    {{#if error}}
-    {{#each error }}
-    <p class="alert alert-danger">{{ this.message }}</p>
-    {{/each}}
-    {{/if}}
+
+              {{#if error}}
+              {{#each error }}
+              <p class="alert alert-danger">{{ this.message }}</p>
+              {{/each}}
+              {{/if}}
               {{#if success}}
               <p>{{success.message}}</p>
               {{/if}}

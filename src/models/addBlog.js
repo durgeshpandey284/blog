@@ -7,6 +7,7 @@ const blogSchema = mongoose.Schema({
         required: true,
         minLength: 3
     },
+    blogimage: String,
     email: {
         type: String,
         required: true,
@@ -30,7 +31,8 @@ const blogSchema = mongoose.Schema({
         type: String,
         required: true,
         minLength: 20
-    }
+    },
+    
 })
 
 //create a collection

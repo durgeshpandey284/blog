@@ -31,6 +31,31 @@
                                     </i></a>
                             </p>
                         </div>
+                        <div class="col-lg-4 order-lg-0 text-center">
+                            {{!-- /img/user.png --}}
+                            <img src="/uploads/{{profileimg}}" class="mx-auto img-fluid rounded-circle" alt="user_icon"
+                                width="50%" />
+                            {{#unless viewOnly}}
+                            <h6 class="my-4">Upload a new photo</h6>
+                            <form action="/uploadprofileimg/{{userData._id}}" method="POST"
+                                enctype="multipart/form-data">
+                                <div class="input-group px-xl-4">
+                                    <div class="custom-file">
+                                        {{!-- <input type="file" id="image" name="profileimg" value=""> --}}
+                                        <input type="file" id="image" class="custom-file-input" name="image" value=""
+                                            required>
+                                        <label class="custom-file-label" for="inputGroupFile02" style="margin: 0rem;"
+                                            aria-describedby="inputGroupFileAddon02"><i class="fa fa-cloud-upload"
+                                                aria-hidden="true"></i>Choose file</label>
+                                    </div>
+
+                                </div>
+                                <div class="pt-3 float-left ml-3">
+                                    <button type="submit" class="btn-style btn-primary">Upload</button>
+                                </div>
+                            </form>
+                            {{/unless}}
+                        </div>
                         {{#if userData}}
                         <div class="col-lg-8 order-lg-1 personal-info">
 
@@ -111,30 +136,7 @@
                         </div>
                         {{/if}}
 
-                        <div class="col-lg-4 order-lg-0 text-center">
-                            <img src="/img/user.png" class="mx-auto img-fluid rounded-circle" alt="user_icon"
-                                width="50%" />
-                            <h6 class="my-4">Upload a new photo</h6>
-                            <form action="/uploadprofileimg/{{userData._id}}" method="POST" enctype="multipart/form-data">
-                                <div class="input-group px-xl-4">
-                                    <div class="custom-file">
-                                        {{!-- <input type="file" id="image" name="profileimg" value=""> --}}
-                                        <input type="file" id="image" class="custom-file-input" name="image" value=""
-                                            required>
-                                        <label class="custom-file-label" for="inputGroupFile02"
-                                            aria-describedby="inputGroupFileAddon02">Choose file</label>
-                                    </div>
-                                    <div class="input-group-append">
-                                        <button class="btn btn-secondary"><i class="fa fa-cloud-upload"
-                                                aria-hidden="true"></i></button>
-                                    </div>
-                                    <div>
-                                        <button type="submit">Submit</button>
-                                    </div>
-                                </div>
 
-                            </form>
-                        </div>
 
                     </div>
                 </div>

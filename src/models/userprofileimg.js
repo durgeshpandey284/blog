@@ -1,11 +1,7 @@
 var mongoose = require('mongoose');
 
 var imageSchema = new mongoose.Schema({
-    img:
-    {
-        data: Buffer,
-        contentType: String
-    },
+    img: String,
     profileid: {
         type: String
     }
@@ -13,4 +9,6 @@ var imageSchema = new mongoose.Schema({
 
 //Image is a model which has a schema imageSchema
 
-module.exports = new mongoose.model('Image', imageSchema);
+const image = new mongoose.model("image", imageSchema);
+
+module.exports = image;

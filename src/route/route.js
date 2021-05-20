@@ -4,60 +4,79 @@ const bcrypt = require("bcryptjs");
 var multer = require('multer');
 var fs = require('fs');
 const path = require("path");
+const exec = require('child_process');
 
 const Blog = require("../models/addBlog");
 const User = require("../models/usermessage");
 const RegisterUser = require("../models/userRegistration");
-var imgModel = require('../models/userprofileimg');
+var image = require('../models/userprofileimg');
 
 
 var storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, 'uploads')
-    },
+    destination: "./public/uploads",
     filename: (req, file, cb) => {
-        cb(null, file.fieldname + '-' + Date.now())
+        cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname))
     }
 });
-var upload = multer({ storage: storage });
+var uploadprofileimage = multer({ storage: storage }).single('image');
 
 
-//  Start of upload image 
-router.post('/uploadprofileimg/:id', upload.single('image'), (req, res, next) => {
-
+//  Start of uploadprofileimage image 
+router.post('/uploadprofileimg/:id', uploadprofileimage, async (req, res, next) => {
     const profileId = req.params.id;
-    console.log(__dirname + " : " + path.join(__dirname, "../../uploads"))
-    var obj = {
-        img: {
-            data: fs.readFileSync(path.join(__dirname, "../../uploads/" + req.file.filename)),
-            contentType: 'image/png'
-        },
+    var imageFile = req.file.filename;
+    var success = req.file.filename + " uploaded successfully";
+    console.log(success);
+
+    // find image and replace from image table
+    const isProfileImageExist = await image.findOneAndReplace({ profileid: profileId }, {
+        img: imageFile,
         profileid: profileId
-    }
-    console.log("_________________________uploadprofileimg_______________________")
-    // imgModel.findOneAndUpdate({_id:profileId}, obj)
-    imgModel.findOneAndUpdate({ _id: profileId }, obj, (err, item) => {
-        if (err) {
-            console.log(err);
-        }
-        else {
-            //item.save();
-            // res.redirect('/');
-            // If the document doesn't exist
-            if (!item) {
-                // Create it
-                item = new imgModel(obj);
-            }
-            // Save the document
-            item.save(function (error) {
-                if (!error) {
-                    // Do something with the document
-                } else {
-                    throw error;
-                }
-            });
-        }
     });
+
+    // if image replaced  then save
+    if (isProfileImageExist) {
+        const profileData = await RegisterUser.findOne({ _id: profileId });
+        res.render("profile", {
+            profileData: profileData,
+            isloogedIn: req.session.loggedin,
+            userName: req.session.username,
+            userData: req.session.userData,
+            viewOnly: true,
+            profileimg: isProfileImageExist.img
+        });
+
+    } else {  // if new profile image is creating then, create new image and save
+        var imageDetail = new image({
+            img: imageFile,
+            profileid: profileId
+        })
+        imageDetail.save(async function (err, doc) {
+            if (err) throw err;
+            const profileData = await RegisterUser.findOne({ _id: profileId });
+            const profileIMG = await image.findOne({ profileid: profileId }).sort({ created_at: -1 }); // get latest profile image
+            if (profileIMG) {
+                res.render("profile", {
+                    profileData: profileData,
+                    isloogedIn: req.session.loggedin,
+                    userName: req.session.username,
+                    userData: req.session.userData,
+                    viewOnly: true,
+                    profileimg: profileIMG.img
+                });
+            } else {
+                res.render("profile", {
+                    profileData: profileData,
+                    isloogedIn: req.session.loggedin,
+                    userName: req.session.username,
+                    userData: req.session.userData,
+                    viewOnly: true,
+                    profileimg: 'user.png'
+                });
+            }
+        })
+    }
+
 });
 
 //  END of upload image 
@@ -86,28 +105,7 @@ router.get("/blog", async (req, res) => {
     }); // pass data to templates
 })
 
-// get blog by blog id
-router.get("/blogdetail/:id", async (req, res) => {
-    try {
-        if (req.session.loggedin) {
-            const _id = req.params.id;
-            const getUniqueBlog = await Blog.findById(_id);
-            res.render("blogdetail", {
-                blog: getUniqueBlog,
-                isloogedIn: req.session.loggedin,
-                userName: req.session.username
-            });
-        } else {
-            res.redirect("/blog");
-        }
-
-    } catch (error) {
-        res.status(500).send(error);
-
-    }
-})
-
-// get blog by user email
+// get blog by logged in user 
 router.get("/userblog/:id", async (req, res) => {
     try {
         if (req.session.loggedin) {
@@ -124,10 +122,32 @@ router.get("/userblog/:id", async (req, res) => {
         }
 
     } catch (error) {
-        console.log("ERRROROROR****************")
+
         res.status(500).send(error);
     }
 })
+// get blog by blog id
+router.get("/blogdetail/:id", async (req, res) => {
+    try {
+        // if (req.session.loggedin) {
+        const _id = req.params.id;
+        const getUniqueBlog = await Blog.findById(_id);
+        res.render("blogdetail", {
+            blog: getUniqueBlog,
+            isloogedIn: req.session.loggedin,
+            userName: req.session.username
+        });
+        // } else {
+        //     res.redirect("/blog");
+        // }
+
+    } catch (error) {
+        // res.status(500).send(error);
+        res.redirect("/blog");
+    }
+})
+
+
 
 // get blog by user email
 async function getBlogByEmail(id) {
@@ -153,20 +173,70 @@ router.get("/postblog", (req, res) => {
 
 })
 
-// add blog 
-router.post("/postblog", async (req, res) => {
-    try {
-        console.log(req.body);
-        req.body['author'] = req.session.userData.name;
-        req.body['email'] = req.session.userData.email;
-        req.body['phone'] = req.session.userData.phone;
-        console.log(req.body);
-        const blogData = new Blog(req.body);
-        const responsedata = await blogData.save();
-        res.status(201).redirect("/blog");
-    } catch (error) {
-        res.status(500).send(error);
+
+// add blog with image
+var blogStorage = multer.diskStorage({
+    destination: "./public/uploadsBlog",
+    filename: (req, file, cb) => {
+        cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname))
     }
+});
+var uploadBlogimage = multer({ storage: blogStorage }).single('image');
+
+// add blog 
+router.post("/postblog", uploadBlogimage, async (req, res) => {
+    var imageFile = req.file.filename;
+    var success = req.file.filename + " uploaded successfully";
+    console.log(success);
+
+    try {
+        var blogData = new Blog({
+            blogimage: imageFile,
+            author: req.session.userData.name,
+            email: req.session.userData.email,
+            phone: req.session.userData.phone,
+            title: req.body.title,
+            blog: req.body.blog
+        })
+        const responsedata = await blogData.save();
+        res.render("blog")
+    } catch (err) {
+        console.log(err);
+        res.render("blog")
+    }
+
+
+    // blogData.save(async function (err, doc) {
+    //     if (err) throw err;
+    //     const profileData = await RegisterUser.findOne({ _id: profileId });
+    //     const profileIMG = await image.findOne({ profileid: profileId }).sort({ created_at: -1 }); // get latest profile image
+    //     if (profileIMG) {
+    //         res.render("profile", {
+    //             profileData: profileData,
+    //             isloogedIn: req.session.loggedin,
+    //             userName: req.session.username,
+    //             userData: req.session.userData,
+    //             viewOnly: true,
+    //             profileimg: profileIMG.img
+    //         });
+    //     } 
+    // });
+
+
+
+
+    // try {
+
+    //     req.body['author'] = req.session.userData.name;
+    //     req.body['email'] = req.session.userData.email;
+    //     req.body['phone'] = req.session.userData.phone;
+
+    //     const blogData = new Blog(req.body);
+    //     const responsedata = await blogData.save();
+    //     res.status(201).redirect("/blog");
+    // } catch (error) {
+    //     res.status(500).send(error);
+    // }
 })
 
 // post request for contact us
@@ -174,7 +244,7 @@ router.post("/contact", async (req, res) => {
     try {
         const userData = new User(req.body);
         const responsedata = await userData.save();
-        console.log(responsedata);
+
         res.status(201).render("index", {
             success: {
                 success: true,
@@ -183,16 +253,7 @@ router.post("/contact", async (req, res) => {
         });  // for UI
     }
     catch (error) {
-        console.log(error);
-        res.json(error.errors.message);
-        // in case , we need to show error on ui
-        res.render("index", {
-            error: {
-                status: error.status || 500,
-                message: error.message || 'Internal Server Error',
-            }
-        })
-        // res.status(500).send(error);
+        res.render("index", { error: "Some error occured, Please try again in some time" });
     }
 })
 
@@ -214,7 +275,7 @@ router.post("/login", async (req, res) => {
 
         // adding middleware to genrate token
         const token = await userData.generateToken();
-        // console.log(`${isMatch}Login Token is ${token}`);
+
 
         // set username and a flag to maintain session that user is logged in
         req.session.loggedin = true;
@@ -257,16 +318,16 @@ router.post("/register", async (req, res) => {
 
             // call middleware function for token genration
             const token = await registerUser.generateToken();
-            console.log(`Token is ${token}`);
+
 
             const registerdUser = await registerUser.save();
-            console.log(registerdUser)
+
             res.status(201).render("register", {
                 registerSuccess: "User registered successfully."
             });
         }
     } catch (error) {
-        console.log(error);
+
         res.render("register", { invalidCred: "Some error occured, Please try again in some time" });
     }
 });
@@ -275,29 +336,29 @@ router.post("/register", async (req, res) => {
 router.get("/profile/:id", async (req, res) => {
     const _id = req.params.id;
     const profileData = await RegisterUser.findOne({ _id: _id });// get that user
-    let profileImage;
 
-    // imgModel.find({profileid}) // get profile image
-    await imgModel.findOne({ profileid: _id }, {}, { sort: { 'created_at': -1 } }, function (err, post) {
-        console.log("****************")
-        console.log(post);
-        profileImage = post;
-        // coverting buffer to base64
-        // let base64data = post.img.data.buffer.toString('base64');
-        // console.log("****************")
-        // profileImage = base64data;
-        // console.log(JSON.stringify(base64data))
-    });
-
-    res.render("profile", {
-        profileData: profileData,
-        isloogedIn: req.session.loggedin,
-        userName: req.session.username,
-        userData: req.session.userData,
-        viewOnly: true,
-        profileImage: profileImage
-    });
+    const profileIMG = await image.findOne({ profileid: _id }).sort({ created_at: -1 }); // get latest profile image
+    if (profileIMG) {
+        res.render("profile", {
+            profileData: profileData,
+            isloogedIn: req.session.loggedin,
+            userName: req.session.username,
+            userData: req.session.userData,
+            viewOnly: true,
+            profileimg: profileIMG.img
+        });
+    } else {
+        res.render("profile", {
+            profileData: profileData,
+            isloogedIn: req.session.loggedin,
+            userName: req.session.username,
+            userData: req.session.userData,
+            viewOnly: true,
+            profileimg: 'user.png'
+        });
+    }
 })
+
 // get profile
 router.get("/editprofile/:id", async (req, res) => {
     const _id = req.params.id;

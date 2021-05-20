@@ -17,13 +17,16 @@
         {{#if userData}}
         <div class="container-fluid mt-5" style="margin-top: 0rem !important;">
             <div class="row">
+                {{success}}
+                {{error}}
                 <div class="col-md-10 col-12 mx-auto">
-                    <form action="/postblog" method="POST">
+                    <form action="/postblog" method="POST" enctype="multipart/form-data">
                         <div class="row">
                             <div class="col-md-6 col-12">
                                 <div class="form-group">
                                     <label for="exampleInputEmail1">Author Name</label>
-                                    <input type="text" class="form-control" id="exampleInputEmail1" name="author" value="{{userData.name}}" disabled />
+                                    <input type="text" class="form-control" id="exampleInputEmail1" name="author"
+                                        value="{{userData.name}}" disabled />
 
                                 </div>
                                 <div class="form-group">
@@ -34,7 +37,8 @@
                                 </div>
                                 <div class="form-group">
                                     <label for="exampleInputPassword1">Phone</label>
-                                    <input type="text" class="form-control" id="exampleInputPassword1" name="phone" value="{{userData.phone}}" disabled />
+                                    <input type="text" class="form-control" id="exampleInputPassword1" name="phone"
+                                        value="{{userData.phone}}" disabled />
                                 </div>
                                 <div class="form-group">
                                     <label for="exampleInputPassword1">Blog Title</label>
@@ -48,9 +52,8 @@
                                         name="blog"></textarea>
                                 </div>
                                 <div class="form-group">
-                                    <label for="exampleFormControlFile1">Upload image </label>
-                                    <input type="file" class="form-control-file" id="exampleFormControlFile1"
-                                        name="image">
+                                    <input type="file" id="image" class="form-control-file custom-file-input"
+                                        name="image" value="" style="opacity: unset;" required />
                                 </div>
                                 <button type="submit" class="btn-style btn-primary">Submit</button>
                             </div>
