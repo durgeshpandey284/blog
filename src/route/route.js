@@ -98,11 +98,19 @@ router.get("/", (req, res) => {
 //  get all blogs
 router.get("/blog", async (req, res) => {
     const getBlogs = await Blog.find({});
-    res.render("blog", {
-        isloogedIn: req.session.loggedin,
-        userName: req.session.username,
-        post: getBlogs
-    }); // pass data to templates
+    if (getBlogs.length) {
+        res.render("blog", {
+            isloogedIn: req.session.loggedin,
+            userName: req.session.username,
+            post: getBlogs
+        }); // pass data to templates
+    } else {
+        res.render("blog", {
+            isloogedIn: req.session.loggedin,
+            isBlogExist: "There is no blogs yet. You may be the first to write. Please sign up and login."
+        });
+    }
+
 })
 
 // get blog by logged in user 

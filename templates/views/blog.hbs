@@ -12,45 +12,47 @@
 
 <body>
     {{>navbar}}
-     <div class="hero-background">
-    {{!-- hero section start --}}
-    <div class="container-fluid mt-5 about-style" id="serviceid">
-        <div class="row">
-            <div class="col-md-10 col-12 mx-auto">
-                {{!-- <h1 class="text-center main-heading">Blogs</h1> --}}
-                {{#if isloogedIn}}
-                <a class="text-center  btn-style btn-primary" href="/postblog">Add new blog</a>
-                {{/if}}
-                <p class="text-center sub-heading py-5">Don’t focus on having a great blog. Focus on producing a blog
-                    that’s great for your readers. <span class="bold-style">~Brian Clark</span></p>
+    <div class="hero-background">
+        {{!-- hero section start --}}
+        <div class="container-fluid mt-5 about-style" id="serviceid">
+            <div class="row">
+                <div class="col-md-10 col-12 mx-auto">
+                    {{!-- <h1 class="text-center main-heading">Blogs</h1> --}}
+                    {{#if isloogedIn}}
+                    <a class="text-center  btn-style btn-primary" href="/postblog">Add new blog</a>
+                    {{/if}}
+                    <p class="text-center sub-heading py-5">Don’t focus on having a great blog. Focus on producing a
+                        blog
+                        that’s great for your readers. <span class="bold-style">~Brian Clark</span></p>
 
-                <div class="row">
-                    {{#if post}}
-                    {{#each post}}
-                    <div class="col-md-4">
-                        <div class="box">
-                            <div class="our-services settings blogs-details">
-                                <div class="">
-                                    <img src="img/bird1.jfif" alt="blog post" class="img-wdth-height">
+                    <div class="row">
+                        <h4 class="text-center sub-heading py-5 hint">{{isBlogExist}}</h4>
+                        {{#if post}}
+                        {{#each post}}
+                        <div class="col-md-4">
+                            <div class="box">
+                                <div class="our-services settings blogs-details">
+                                    <div class="">
+                                        <img src="img/bird1.jfif" alt="blog post" class="img-wdth-height">
+                                    </div>
+                                    <h4>{{this.title}}</h4>
+                                    {{!-- helper function for thirty length for title 608c3c89a7a16e31c4dad3c7--}}
+                                    <p>{{twentyCharaterString blog}}<span class="bold-style"><a
+                                                href="/blogdetail/{{this._id}}">Read
+                                                more</a></span></p>
+                                    {{!-- <button class="btn-style btn-primary">Read more</button> --}}
+                                    <p class="author-name">~{{this.author}}</p>
                                 </div>
-                                <h4>{{this.title}}</h4>
-                                {{!-- helper function for thirty length for title 608c3c89a7a16e31c4dad3c7--}}
-                                <p>{{twentyCharaterString blog}}<span class="bold-style"><a
-                                            href="/blogdetail/{{this._id}}">Read
-                                            more</a></span></p>
-                                {{!-- <button class="btn-style btn-primary">Read more</button> --}}
-                                <p class="author-name">~{{this.author}}</p>
                             </div>
                         </div>
-                    </div>
-                    {{/each}}
-                    {{/if}}
+                        {{/each}}
+                        {{/if}}
 
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
 
     <script src="../jq/jquery.js" type="text/javascript"></script>
     <script src="../js/bootstrap.js" type="text/javascript"></script>
