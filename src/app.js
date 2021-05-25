@@ -1,8 +1,10 @@
-require('dotenv').config({path: "./config.env"});
+require('dotenv').config({ path: "./config.env" });
 const express = require("express");
 const path = require("path");
 const hbs = require("hbs");
 const session = require('express-session');
+var Handlebars = require('handlebars');
+var paginate = require('handlebars-paginate');
 
 require("./db/conn");
 const router = require("./route/route");
@@ -21,6 +23,7 @@ const staticPath = path.join(__dirname, "../public");
 const templatePath = path.join(__dirname, "../templates/views");
 const partialsPath = path.join(__dirname, "../templates/partials");
 
+Handlebars.registerHelper('paginate', paginate); // for pagination added helper
 app.use(express.urlencoded({ extended: false })); // to show data for send in response
 app.use(express.json()); // display data in json 
 

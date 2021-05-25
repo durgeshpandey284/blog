@@ -103,6 +103,10 @@ router.get("/blog", async (req, res) => {
             isloogedIn: req.session.loggedin,
             userName: req.session.username,
             post: getBlogs
+            // pagination: {
+            //     page: 3,
+            //     pageCount: 10
+            //   }
         }); // pass data to templates
     } else {
         res.render("blog", {
@@ -112,6 +116,48 @@ router.get("/blog", async (req, res) => {
     }
 
 })
+
+// get blog with pagination
+//  get all blogs
+router.get("/blogsperpage", async (req, res) => {
+    // Declaring variable
+    const resPerPage = 4; // results per page
+    const page = req.params.page || 1; // Page
+    console.log("blogsperpage part")
+    // const getBlogs = await Blog.find({});
+
+    try {
+
+        // if (req.query.search) {
+        // Find Demanded Products - Skipping page values, limit results       per page
+        const getBlogs = await Blog.find({}).skip((resPerPage * page) - resPerPage)
+            .limit(resPerPage);
+        console.log(getBlogs)
+        // Count how many products were found
+        const numOfProducts = await Blog.count();
+        console.log(numOfProducts)
+        // Renders The Page
+        // res.render('shop-products.ejs', {
+        //     products: getBlogs,
+        //     currentPage: page,
+        //     pages: Math.ceil(numOfProducts / resPerPage),
+        //     numOfResults: numOfProducts
+        // });
+        res.status(200).send({
+            products: getBlogs,
+            currentPage: page,
+            pages: Math.ceil(numOfProducts / resPerPage),
+            numOfResults: numOfProducts
+        })
+        // }
+    } catch (err) {
+        console.log("Error part")
+        throw new Error(err);
+    }
+
+})
+
+
 
 // get blog by logged in user 
 router.get("/userblog/:id", async (req, res) => {
@@ -428,7 +474,6 @@ router.get("/logout", async (req, res) => {
     }
 })
 
-
 router.get("*", (req, res) => {
     res.status(404).render("404", { title: "Page Not Found" })
 })
@@ -455,6 +500,8 @@ function validateUserRegistrationForm(request) {
     }
     return validationErrors;
 }
+
+
 
 
 module.exports = router;
